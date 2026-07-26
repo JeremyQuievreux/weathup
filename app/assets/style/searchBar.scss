@@ -2,10 +2,44 @@
   width: 50%;
 }
 
-.option-icao {
-  border: 2px solid red;
+.icao-chip {
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 4px;
+}
+
+.v-theme--light {
+  .icao-chip {
+    border: 1px solid #0055B3;
+    background-color: #e3f2fd;
+    color: #1976d2;
+  }
+
+  .option-add-btn {
+    color: #1976d2;
+    border: 1px solid #0055B3;
+
+    &:hover {
+      background-color: #0055B3;
+      color: white;
+    }
+  }
+}
+
+.v-theme--dark {
+  .icao-chip {
+    border: 1px solid white;
+    background-color: lightgray;
+    color: black;
+  }
+
+  .option-add-btn {
+    border: 1px solid lightgray;
+
+    &:hover {
+      background-color: lightgrey;
+      color: black;
+    }
+  }
 }

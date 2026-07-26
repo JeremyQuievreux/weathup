@@ -1,6 +1,6 @@
 <template>
   <div class="app-header">
-    <div class="logo-title">
+    <div class="logo-title" :class="{ 'logo-title-light': !isDark, 'logo-title-dark': isDark }">
       <MdiIcon icon="mdiCloudUpload" size="40px" />
       <h1>WeathUp</h1>
     </div>

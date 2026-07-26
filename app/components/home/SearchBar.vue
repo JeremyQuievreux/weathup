@@ -5,11 +5,11 @@
         <v-list-item v-bind="props" :title="item.name" :subtitle="`${item.municipality} · ${item.country} · ${getCountryFlag(item.iso)}`">
           <template v-slot:prepend>
             <div class="text-right mr-4" style="width: 50px;">
-              <div class="text-caption text-medium-emphasis option-icao">{{ item.icao }}</div>
+              <div class="text-caption text-medium-emphasis icao-chip">{{ item.icao }}</div>
             </div>
           </template>
           <template v-slot:append>
-            <v-icon-btn @click="onAddAirportToFavList(item)" variant="outlined" color="primary">
+            <v-icon-btn @click="onAddAirportToFavList(item)"  class="option-add-btn">
               <MdiIcon icon="mdiPlus" size="20px" />
             </v-icon-btn>
           </template>
