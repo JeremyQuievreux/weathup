@@ -1,0 +1,9 @@
+{
+  "welcome": "Welcome",
+  "search": "Search airport",
+  "$vuetify": {
+    "input": {
+      "clear": "Clear"
+    }
+  }
+}

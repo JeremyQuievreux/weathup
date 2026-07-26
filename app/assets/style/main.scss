@@ -1,0 +1,22 @@
+@use "./footer.scss";
+@use "./header.scss";
+@use "./searchBar.scss";
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.home-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+* {
+  font-family: "Inter Tight";
+}
