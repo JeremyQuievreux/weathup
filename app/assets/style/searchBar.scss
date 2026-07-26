@@ -1,45 +1,120 @@
+// ==========================================
+// 1. RECHERCHE PRINCIPALE (Barre de recherche)
+// ==========================================
+// Responsive mobile-first fluide
 .home-search-bar {
-  width: 50%;
-}
+  width: 90%;
 
-.icao-chip {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 4px;
-}
-
-.v-theme--light {
-  .icao-chip {
-    border: 1px solid #0055B3;
-    background-color: #e3f2fd;
-    color: #1976d2;
+  @media (min-width: 768px) {
+    width: 75%;
   }
 
-  .option-add-btn {
-    color: #1976d2;
-    border: 1px solid #0055B3;
+  @media (min-width: 1024px) {
+    width: 50%;
+  }
+}
 
+.search-bar-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 10px;
+  margin-bottom: 5px;
+
+  // Interactions selon le thème
+  .v-theme--light & {
     &:hover {
-      background-color: #0055B3;
-      color: white;
+      background-color: #e3f2fd;
+    }
+  }
+
+  .v-theme--dark & {
+    &:hover {
+      background-color: lightgray;
+
+      .item-title {
+        color: black;
+      }
     }
   }
 }
 
-.v-theme--dark {
-  .icao-chip {
-    border: 1px solid white;
-    background-color: lightgray;
-    color: black;
+// ==========================================
+// 2. ÉLÉMENTS INTERNES DU MENU / DE LA LISTE
+// ==========================================
+.item-content,
+.item-title,
+.item-subtitle {
+  margin: 0;
+  padding: 0;
+}
+
+.item-content {
+  flex-grow: 1;
+  margin: 0 10px;
+}
+
+.item-title {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.item-subtitle {
+  font-size: 12px;
+  color: gray;
+}
+
+// ==========================================
+// 3. BADGES & BOUTONS (Chip ICAO & Action)
+// ==========================================
+.icao-chip-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  padding: 5px;
+  margin: 0;
+  border-radius: 4px;
+
+  // Thème Clair
+  .v-theme--light & {
+    border: 1px solid #0055b3;
+    background-color: #e3f2fd;
+    color: #1976d2;
   }
 
-  .option-add-btn {
-    border: 1px solid lightgray;
+  // Thème Sombre
+  .v-theme--dark & {
+    border: 1px solid white;
+    background-color: darkgray;
+    color: black;
+  }
+}
+
+.option-add-btn {
+
+  // Thème Clair
+  .v-theme--light & {
+    border: 1px solid #0055b3;
+    color: #1976d2;
 
     &:hover {
-      background-color: lightgrey;
-      color: black;
+      background-color: #0055b3;
+      color: white;
+    }
+  }
+
+  // Thème Sombre
+  .v-theme--dark & {
+    border: 1px solid white;
+    background-color: darkgray;
+    color: black;
+
+    &:hover {
+      border-color: black;
+      background-color: black;
+      color: white;
     }
   }
 }

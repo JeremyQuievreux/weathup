@@ -2,7 +2,7 @@
   <div class="app-header">
     <div class="logo-title" :class="{ 'logo-title-light': !isDark, 'logo-title-dark': isDark }">
       <MdiIcon icon="mdiCloudUpload" size="40px" />
-      <h1>WeathUp</h1>
+      <h1>WeathUp!</h1>
     </div>
     <div class="btn-container">
       <v-btn icon density="compact" :aria-label="isDark ? 'Activer le mode clair' : 'Activer le mode sombre'" @click="toggleTheme">
@@ -44,6 +44,9 @@
             </v-list-item>
           </v-list>
         </v-menu>
+      </v-btn>
+      <v-btn icon density="compact">
+        <v-icon>{{'mdi-cog' }}</v-icon>
       </v-btn>
     </div>
   </div>

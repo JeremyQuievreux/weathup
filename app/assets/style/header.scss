@@ -1,9 +1,16 @@
 .app-header {
-  width: 50%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  width: 90%;
+
+  @media (min-width: 768px) {
+    width: 75%;
+  }
+
+  @media (min-width: 1024px) {
+    width: 50%;
+  }
 }
 
 

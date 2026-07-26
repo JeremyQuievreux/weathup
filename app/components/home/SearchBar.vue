@@ -1,19 +1,45 @@
 <template>
   <div class="home-search-bar">
-    <v-autocomplete v-model="selectedAirport" v-model:search="search" :items="filteredAirports" item-title="name" item-value="icao" :label="$t('search')" placeholder="Name, Municipality, IATA or ICAO" clearable no-filter return-object hide-selected @update:model-value="onSelectAirport">
+    <v-autocomplete
+      v-model="selectedAirport"
+      v-model:search="search"
+      v-model:menu="isMenuOpen"
+      :items="filteredAirports"
+      item-title="name"
+      item-value="icao"
+      :label="$t('search')"
+      placeholder="Name, Municipality, IATA or ICAO"
+      clearable
+      no-filter
+      return-object
+      hide-selected
+      :menu-props="{ width: '0' }"
+      @update:model-value="onSelectAirport"
+    >
       <template #item="{ props, item }">
-        <v-list-item v-bind="props" :title="item.name" :subtitle="`${item.municipality} · ${item.country} · ${getCountryFlag(item.iso)}`">
-          <template v-slot:prepend>
-            <div class="text-right mr-4" style="width: 50px;">
-              <div class="text-caption text-medium-emphasis icao-chip">{{ item.icao }}</div>
-            </div>
-          </template>
-          <template v-slot:append>
-            <v-icon-btn @click="onAddAirportToFavList(item)"  class="option-add-btn">
+        <div class="search-bar-item" v-bind="props">
+
+            <p class="icao-chip-container">{{ item.icao }}</p>
+
+          <div class="item-content">
+            <p class="item-title">{{ item.name }}</p>
+            <p class="item-subtitle">
+              {{ item.municipality }} · {{ item.country }} ·
+              {{ getCountryFlag(item.iso) }}
+            </p>
+          </div>
+          <div class="item-add-btn">
+            <v-btn
+              icon
+              variant="text"
+              density="comfortable"
+              class="option-add-btn"
+              @click.stop.prevent="onAddAirportToFavList(item)"
+            >
               <MdiIcon icon="mdiPlus" size="20px" />
-            </v-icon-btn>
-          </template>
-        </v-list-item>
+            </v-btn>
+          </div>
+        </div>
       </template>
 
       <template #no-data>
@@ -27,7 +53,8 @@
 import { computed, nextTick, ref } from "vue";
 import { AIRPORTS_LIST } from "../../data/airports";
 import type { Airport } from "../../types/airport";
-const { locale } = useI18n();
+
+const isMenuOpen = ref(false);
 
 interface Props {
   favAirportList: Airport[];
@@ -95,5 +122,7 @@ const onAddAirportToFavList = (airport: Airport) => {
   if (!exists) {
     props.favAirportList.push(airport);
   }
+  isMenuOpen.value = false;
+  search.value = "";
 };
 </script>
