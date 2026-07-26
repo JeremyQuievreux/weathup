@@ -71,22 +71,58 @@ const airports: Airport[] = AIRPORTS_LIST;
 const search = ref("");
 const selectedAirport = ref<Airport | null>(null);
 
-const filteredAirports = computed(() => {
-  const query = search.value.trim().toLowerCase();
+// Fonction utilitaire pour nettoyer les accents et caractères spéciaux
+const normalizeText = (text:String) => {
+  if (!text) return '';
+  return text
+    .toLowerCase()
+    .normalize('NFD') // Décompose les caractères accentués (ex: 'ā' -> 'a' + accent)
+    .replace(/[\u0300-\u036f]/g, ''); // Supprime les marques d'accents
+};
 
-  if (!query) {
-    return airports;
+const filteredAirports = computed(() => {
+  const rawQuery = search.value.trim();
+
+  // 1. Déclenchement à partir de 3 caractères
+  if (rawQuery.length < 3) {
+    return [];
   }
 
-  return airports.filter((airport) =>
-    [
-      airport.name,
-      airport.municipality,
-      airport.country,
-      airport.iata,
-      airport.icao,
-    ].some((value) => value?.toLowerCase().includes(query))
-  );
+  // Normalisation de la saisie utilisateur (ex: "Liepā" devient "liepa")
+  const query = normalizeText(rawQuery);
+
+  const results = [];
+
+  for (const airport of airports) {
+    // Normalisation de chaque champ de l'aéroport
+    const iata = normalizeText(airport.iata);
+    const icao = normalizeText(airport.icao);
+    const name = normalizeText(airport.name);
+    const municipality = normalizeText(airport.municipality);
+    const country = normalizeText(airport.country);
+
+    let score = 0;
+
+    // --- RÈGLES DE PRIORITÉ ---
+    if (iata === query) score += 100;
+    else if (icao === query) score += 90;
+    else if (iata.startsWith(query)) score += 80;
+    else if (icao.startsWith(query)) score += 70;
+    else if (municipality.startsWith(query)) score += 50;
+    else if (name.startsWith(query)) score += 40;
+    else if (municipality.includes(query)) score += 30;
+    else if (name.includes(query)) score += 20;
+    else if (country.includes(query)) score += 10;
+
+    if (score > 0) {
+      results.push({ airport, score });
+    }
+  }
+
+  // Tri par score décroissant
+  return results
+    .sort((a, b) => b.score - a.score)
+    .map((item) => item.airport);
 });
 
 const getCountryFlag = (isoCode: string) => {

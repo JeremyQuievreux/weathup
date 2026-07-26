@@ -1,6 +1,6 @@
 export interface Airport {
   icao: string;
-  iata: string | null;
+  iata: string;
   name: string;
   municipality: string;
   //todo rework to be one property
