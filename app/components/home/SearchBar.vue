@@ -13,7 +13,7 @@
       no-filter
       return-object
       hide-selected
-      :menu-props="{ width: '0' }"
+      :menu-props="{ width: '0' , height: '220px'}"
       @update:model-value="onSelectAirport"
     >
       <template #item="{ props, item }">
