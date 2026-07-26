@@ -1,6 +1,8 @@
 {
   "welcome": "Welcome",
   "search": "Search airport",
+  "search_placeholder": "Name, City, IATA or ICAO",
+  "no_results": "No airport found",
   "$vuetify": {
     "input": {
       "clear": "Clear"

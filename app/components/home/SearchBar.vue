@@ -8,7 +8,7 @@
       item-title="name"
       item-value="icao"
       :label="$t('search')"
-      placeholder="Name, Municipality, IATA or ICAO"
+      :placeholder="$t('search_placeholder')"
       clearable
       no-filter
       return-object
@@ -40,10 +40,12 @@
             </v-btn>
           </div>
         </div>
+        <v-divider class="item-divider" />
+
       </template>
 
       <template #no-data>
-        <v-list-item title="Aucun aéroport trouvé" />
+        <v-list-item :title="$t('no_results')" />
       </template>
     </v-autocomplete>
   </div>
