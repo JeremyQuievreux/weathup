@@ -16,11 +16,11 @@ export default defineNuxtConfig({
     defaultLocale: 'en',
     detectBrowserLanguage: false,
     locales: [
-      { code: 'en', name: 'English', file: 'en.json', flag: '🇬🇧' },
-      { code: 'fr', name: 'Français', file: 'fr.json', flag: '🇫🇷' },
-      { code: 'it', name: 'Italiano', file: 'it.json', flag: '🇮🇹' },
-      { code: 'es', name: 'Español', file: 'es.json', flag: '🇪🇸' },
-      { code: 'de', name: 'Deutsch', file: 'de.json', flag: '🇩🇪' },
+      { code: 'en', name: 'English', file: 'en.json'},
+      { code: 'fr', name: 'Français', file: 'fr.json' },
+      { code: 'it', name: 'Italiano', file: 'it.json' },
+      { code: 'es', name: 'Español', file: 'es.json' },
+      { code: 'de', name: 'Deutsch', file: 'de.json' },
     ],
   },
 })

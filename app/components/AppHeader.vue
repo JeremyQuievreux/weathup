@@ -77,11 +77,14 @@ const menu = shallowRef(false);
 
 const { locales, locale, setLocale } = useI18n();
 const theme = useTheme();
+const { setDarkMode } = useUserConfig();
 
 const isDark = computed(() => theme.global.current.value.dark);
 
 function toggleTheme() {
-  theme.global.name.value = isDark.value ? "light" : "dark";
+  const newDark = !isDark.value;
+  theme.global.name.value = newDark ? "dark" : "light";
+  setDarkMode(newDark);
 }
 
 async function changeLocale(code: string) {

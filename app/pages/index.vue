@@ -1,46 +1,15 @@
-
-
 <template>
   <div class="home-container">
-    <HomeSearchBar :favAirportList="favAirportList" />
-    <HomeFavList :favAirportList="favAirportList" />
+    <HomeSearchBar @add-to-favorites="addFavoriteAirport" />
+    <HomeFavList :favorites="favoritesAirports" />
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Airport } from "../types/airport";
-import { ref } from "vue";
+import { computed } from "vue";
+import { useUserConfig } from "../composables/useUserConfig";
 
-const favAirportList = ref<Airport[]>([
-  {
-    icao: "PPIT",
-    iata: "NUP",
-    name: "Nunapitchuk Airport",
-    municipality: "Nunapitchuk",
-    country: "US",
-    iso: "US",
-    lat: 60.905591,
-    lon: -162.440454,
-  },
-  {
-    icao: "PAKA",
-    iata: "TEK",
-    name: "Tatitlek Airport",
-    municipality: "Tatitlek",
-    country: "US",
-    iso: "US",
-    lat: 60.871449,
-    lon: -146.690297,
-  },
-  {
-    icao: "PACH",
-    iata: "CHU",
-    name: "Chuathbaluk Airport",
-    municipality: "Chuathbaluk",
-    country: "US",
-    iso: "US",
-    lat: 61.579102,
-    lon: -159.216003,
-  },
-]);
+const { store, addFavoriteAirport } = useUserConfig();
+
+const favoritesAirports = computed(() => store.value.favoritesAirports);
 </script>

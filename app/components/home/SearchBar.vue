@@ -63,14 +63,6 @@ import type { Airport } from "../../types/airport";
 
 const isMenuOpen = ref(false);
 
-interface Props {
-  favAirportList: Airport[];
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  favAirportList: () => [],
-});
-
 const airports: Airport[] = AIRPORTS_LIST;
 
 const search = ref("");
@@ -158,14 +150,12 @@ const onSelectAirport = async (airport: Airport | null) => {
   search.value = "";
 };
 
-const onAddAirportToFavList = (airport: Airport) => {
-  const exists = props.favAirportList.some(
-    (favAirport) => favAirport.icao === airport.icao,
-  );
+const emit = defineEmits<{
+  "add-to-favorites": [airport: Airport];
+}>();
 
-  if (!exists) {
-    props.favAirportList.push(airport);
-  }
+const onAddAirportToFavList = (airport: Airport) => {
+  emit("add-to-favorites", airport);
   isMenuOpen.value = false;
   search.value = "";
 };

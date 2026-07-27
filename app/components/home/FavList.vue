@@ -1,14 +1,21 @@
 <template>
-  <p v-for="(airport, index) in props.favAirportList" :key="index">{{ airport.name }} ({{ airport.icao }})</p>
+  <p v-if="!props.favorites || props.favorites.length === 0">
+    No favorite airports.
+  </p>
+  <ul v-else>
+    <li v-for="airport in props.favorites" :key="airport.icao">
+      {{ airport.name }} ({{ airport.icao }})
+    </li>
+  </ul>
 </template>
 <script setup lang="ts">
 import type { Airport } from "../../types/airport";
 
 interface Props {
-  favAirportList: Airport[] | null;
+  favorites: Airport[] | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  favAirportList: () => [],
+  favorites: () => [],
 });
 </script>
