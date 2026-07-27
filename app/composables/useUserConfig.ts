@@ -1,7 +1,9 @@
-import { ref } from "vue";
 import type { Airport } from "~/types/airport";
 
 const STORAGE_KEY = "weathup";
+const COOKIE_KEY = "weathup_store";
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
+let hasSyncedFromStorage = false;
 
 interface UserConfig {
   darkMode: boolean;
@@ -19,29 +21,86 @@ const defaultStore: WeathupStore = {
   },
 };
 
-function loadFromStorage(): WeathupStore {
-  if (import.meta.client) {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      return {
-        favoritesAirports: parsed.favoritesAirports ?? [],
-        userConfig: { ...defaultStore.userConfig, ...parsed.userConfig },
-      };
-    }
+function sanitizeStore(parsed: unknown): WeathupStore {
+  if (!parsed || typeof parsed !== "object") {
+    return structuredClone(defaultStore);
   }
-  return structuredClone(defaultStore);
+
+  const record = parsed as Partial<WeathupStore>;
+
+  return {
+    favoritesAirports: Array.isArray(record.favoritesAirports)
+      ? record.favoritesAirports
+      : [],
+    userConfig: { ...defaultStore.userConfig, ...(record.userConfig ?? {}) },
+  };
 }
 
-const store = ref<WeathupStore>(loadFromStorage());
-
-function persist() {
-  if (import.meta.client) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(store.value));
+function parseStore(raw: string | null | undefined): WeathupStore {
+  if (!raw) {
+    return structuredClone(defaultStore);
   }
+
+  try {
+    return sanitizeStore(JSON.parse(raw));
+  } catch {
+    return structuredClone(defaultStore);
+  }
+}
+
+function isStoreEmpty(store: WeathupStore): boolean {
+  return (
+    store.favoritesAirports.length === 0 &&
+    store.userConfig.darkMode === defaultStore.userConfig.darkMode
+  );
 }
 
 export function useUserConfig() {
+  const store = useState<WeathupStore>("weathup-store", () => {
+    const cookie = useCookie<string | null>(COOKIE_KEY, {
+      maxAge: COOKIE_MAX_AGE,
+      sameSite: "lax",
+    });
+
+    if (import.meta.client) {
+      const fromStorage = parseStore(localStorage.getItem(STORAGE_KEY));
+      const hasStorageData =
+        fromStorage.favoritesAirports.length > 0 || fromStorage.userConfig.darkMode;
+
+      if (hasStorageData) {
+        cookie.value = JSON.stringify(fromStorage);
+        return fromStorage;
+      }
+    }
+
+    return parseStore(cookie.value);
+  });
+
+  function persist() {
+    const serialized = JSON.stringify(store.value);
+
+    if (import.meta.client) {
+      localStorage.setItem(STORAGE_KEY, serialized);
+    }
+
+    const cookie = useCookie<string | null>(COOKIE_KEY, {
+      maxAge: COOKIE_MAX_AGE,
+      sameSite: "lax",
+    });
+    cookie.value = serialized;
+  }
+
+  if (import.meta.client && !hasSyncedFromStorage) {
+    const fromStorage = parseStore(localStorage.getItem(STORAGE_KEY));
+
+    if (!isStoreEmpty(fromStorage) && isStoreEmpty(store.value)) {
+      store.value = fromStorage;
+      persist();
+    }
+
+    hasSyncedFromStorage = true;
+  }
+
   function setDarkMode(value: boolean) {
     store.value.userConfig.darkMode = value;
     persist();
