@@ -1,15 +1,27 @@
 <template>
   <div class="app-header">
-    <div class="logo-title" :class="{ 'logo-title-light': !isDark, 'logo-title-dark': isDark }">
+    <div
+      class="logo-title"
+      :class="{ 'logo-title-light': !isDark, 'logo-title-dark': isDark }"
+    >
       <MdiIcon icon="mdiCloudUpload" size="40px" />
       <h1>WeathUp!</h1>
     </div>
     <div class="btn-container">
-      <v-btn icon density="compact" :aria-label="isDark ? 'Activer le mode clair' : 'Activer le mode sombre'" @click="toggleTheme">
-        <v-icon>{{ isDark ? 'mdi-weather-sunny' : 'mdi-weather-night' }}</v-icon>
+      <v-btn
+        icon
+        density="compact"
+        :aria-label="
+          isDark ? 'Activer le mode clair' : 'Activer le mode sombre'
+        "
+        @click="toggleTheme"
+      >
+        <v-icon>{{
+          isDark ? "mdi-weather-sunny" : "mdi-weather-night"
+        }}</v-icon>
       </v-btn>
       <v-btn icon density="compact">
-        <v-icon>{{ 'mdi-web' }}</v-icon>
+        <v-icon>{{ "mdi-web" }}</v-icon>
         <v-menu v-model="menu" activator="parent" location="bottom" offset="10">
           <v-list
             bg-color="surface-light"
@@ -28,16 +40,18 @@
               @click="changeLocale(availableLocale.code)"
             >
               <template #prepend>
-                <span class="mr-2">
-                  {{ availableLocale.flag }}
+                <span class="mr-2 locale-flag" :title="availableLocale.name">
+                  <img
+                    :src="getLocaleFlagUrl(availableLocale.code)"
+                    :alt="`Drapeau ${availableLocale.name}`"
+                    loading="lazy"
+                    decoding="async"
+                  />
                 </span>
               </template>
 
               <template #append>
-                <v-icon
-                  v-if="locale === availableLocale.code"
-                  size="small"
-                >
+                <v-icon v-if="locale === availableLocale.code" size="small">
                   mdi-check
                 </v-icon>
               </template>
@@ -46,7 +60,7 @@
         </v-menu>
       </v-btn>
       <v-btn icon density="compact">
-        <v-icon>{{'mdi-cog' }}</v-icon>
+        <v-icon>{{ "mdi-cog" }}</v-icon>
       </v-btn>
     </div>
   </div>
@@ -57,9 +71,9 @@ import { computed } from "vue";
 import { useTheme } from "vuetify";
 import { useI18n } from "vue-i18n";
 
-import { shallowRef } from 'vue'
+import { shallowRef } from "vue";
 
-  const menu = shallowRef(false)
+const menu = shallowRef(false);
 
 const { locales, locale, setLocale } = useI18n();
 const theme = useTheme();
@@ -73,5 +87,20 @@ function toggleTheme() {
 async function changeLocale(code: string) {
   await setLocale(code);
   menu.value = false;
+}
+
+function getLocaleFlagUrl(code: string) {
+  if (!code || typeof code !== "string") {
+    return "";
+  }
+
+  const localeCode = code.trim().toLowerCase();
+  const countryCode = localeCode === "en" ? "gb" : localeCode;
+
+  if (!/^[a-z]{2}$/.test(countryCode)) {
+    return "";
+  }
+
+  return `https://flagcdn.com/24x18/${countryCode}.png`;
 }
 </script>

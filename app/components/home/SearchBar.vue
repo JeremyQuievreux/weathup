@@ -13,19 +13,25 @@
       no-filter
       return-object
       hide-selected
-      :menu-props="{ width: '0' , maxHeight: '250px'}"
+      :menu-props="{ width: '0', maxHeight: '250px' }"
       @update:model-value="onSelectAirport"
     >
       <template #item="{ props, item }">
         <div class="search-bar-item" v-bind="props">
-
-            <p class="icao-chip-container">{{ item.icao }}</p>
+          <p class="icao-chip-container">{{ item.icao }}</p>
 
           <div class="item-content">
             <p class="item-title">{{ item.name }}</p>
             <p class="item-subtitle">
               {{ item.municipality }} · {{ item.country }} ·
-              {{ getCountryFlag(item.iso) }}
+              <span v-if="item.iso" class="country-flag" :title="item.country">
+                <img
+                  :src="getCountryFlagUrl(item.iso)"
+                  :alt="`Drapeau ${item.country}`"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </span>
             </p>
           </div>
           <div class="item-add-btn">
@@ -41,7 +47,6 @@
           </div>
         </div>
         <v-divider class="item-divider" />
-
       </template>
 
       <template #no-data>
@@ -72,12 +77,12 @@ const search = ref("");
 const selectedAirport = ref<Airport | null>(null);
 
 // Fonction utilitaire pour nettoyer les accents et caractères spéciaux
-const normalizeText = (text:String) => {
-  if (!text) return '';
+const normalizeText = (text: String) => {
+  if (!text) return "";
   return text
     .toLowerCase()
-    .normalize('NFD') // Décompose les caractères accentués (ex: 'ā' -> 'a' + accent)
-    .replace(/[\u0300-\u036f]/g, ''); // Supprime les marques d'accents
+    .normalize("NFD") // Décompose les caractères accentués (ex: 'ā' -> 'a' + accent)
+    .replace(/[\u0300-\u036f]/g, ""); // Supprime les marques d'accents
 };
 
 const filteredAirports = computed(() => {
@@ -120,19 +125,20 @@ const filteredAirports = computed(() => {
   }
 
   // Tri par score décroissant
-  return results
-    .sort((a, b) => b.score - a.score)
-    .map((item) => item.airport);
+  return results.sort((a, b) => b.score - a.score).map((item) => item.airport);
 });
 
-const getCountryFlag = (isoCode: string) => {
-  if (!isoCode || typeof isoCode !== "string" || isoCode.length !== 2) {
+const getCountryFlagUrl = (isoCode: string) => {
+  if (!isoCode || typeof isoCode !== "string") {
     return "";
   }
-  const codeUpper = isoCode.toUpperCase();
-  const firstLetter = codeUpper.charCodeAt(0) - 65 + 0x1f1e6;
-  const secondLetter = codeUpper.charCodeAt(1) - 65 + 0x1f1e6;
-  return String.fromCodePoint(firstLetter, secondLetter);
+
+  const code = isoCode.trim().toLowerCase();
+  if (!/^[a-z]{2}$/.test(code)) {
+    return "";
+  }
+
+  return `https://flagcdn.com/24x18/${code}.png`;
 };
 
 const onSelectAirport = async (airport: Airport | null) => {
@@ -154,7 +160,7 @@ const onSelectAirport = async (airport: Airport | null) => {
 
 const onAddAirportToFavList = (airport: Airport) => {
   const exists = props.favAirportList.some(
-    (favAirport) => favAirport.icao === airport.icao
+    (favAirport) => favAirport.icao === airport.icao,
   );
 
   if (!exists) {

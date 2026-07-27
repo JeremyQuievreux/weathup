@@ -38,3 +38,15 @@
   align-items: center;
   gap: 10px;
 }
+
+.locale-flag {
+  display: inline-flex;
+  align-items: center;
+
+  img {
+    width: 16px;
+    height: 12px;
+    object-fit: cover;
+    border-radius: 2px;
+  }
+}
